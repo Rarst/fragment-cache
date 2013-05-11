@@ -1,0 +1,34 @@
+{
+	"name"        : "rarst/fragment-cache",
+	"description" : "WordPress plugin for partial and async caching of heavy front-end elements.",
+	"keywords"    : ["wordpress", "cache", "performance"],
+	"type"        : "wordpress-plugin",
+	"homepage"    : "https://bitbucket.org/Rarst/fragment-cache",
+	"license"     : "GPL-2.0+",
+	"authors"     : [
+		{
+			"name"    : "Andrey Savchenko",
+			"email"   : "contact@rarst.net",
+			"homepage": "http://www.Rarst.net/"
+		}
+	],
+	"support"     : {
+		"issues": "https://bitbucket.org/Rarst/fragment-cache/issues",
+		"source": "https://bitbucket.org/Rarst/fragment-cache/src"
+	},
+	"require"     : {
+		"composer/installers"          : "~1.0",
+		"markjaquith/wp-tlc-transients": "~1.0",
+		"php"                          : ">=5.3",
+		"pimple/pimple"                : "~1.0"
+	},
+	"repositories": [
+		{
+			"type": "composer",
+			"url" : "http://rarst.net"
+		}
+	],
+	"autoload"    : {
+		"classmap": ["php/"]
+	}
+}
