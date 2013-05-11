@@ -18,7 +18,7 @@ None... Yet.
 
 # License Info
 
-Laps own code is licensed under GPLv2+ and it makes use of code from:
+Fragment Cache own code is licensed under GPLv2+ and it makes use of code from:
 
  - Composer (MIT)
  - Pimple (MIT)
