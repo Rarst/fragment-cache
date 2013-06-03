@@ -37,10 +37,36 @@ class Gallery_Cache extends Fragment_Cache {
 		if ( empty( $args ) )
 			$args = array();
 
+		// salt for cases post edited or attachments changed
+		$args['fc_post_modified']    = get_the_modified_time( 'U' );
+		$args['fc_post_attachments'] = $this->get_attachment_ids();
+
 		$post_id = get_the_ID();
 		$output  = $this->fetch( 'post-' . $post_id, compact( 'args', 'post_id' ), $args );
 
 		return $output;
+	}
+
+	/**
+	 * Retrieve array of attachment IDs for current post.
+	 *
+	 * @return array
+	 */
+	public function get_attachment_ids() {
+
+		static $attachments = array();
+
+		$post_id = get_the_ID();
+
+		if ( ! isset( $attachments[$post_id] ) )
+			$attachments[$post_id] = get_posts( array(
+				'post_type'   => 'attachment',
+				'post_parent' => $post_id,
+				'orderby'     => 'ID',
+				'fields'      => 'ids',
+			) );
+
+		return $attachments[$post_id];
 	}
 
 	/**
