@@ -28,9 +28,6 @@ class Menu_Cache extends Fragment_Cache {
 	 */
 	public function wp_nav_menu_args( $args ) {
 
-		if ( self::$in_callback )
-			return $args;
-
 		if ( empty( $args['kessel_run'] ) ) {
 			add_filter( 'wp_get_nav_menus', '__return_empty_array' ); // these are not the droids you are looking for
 

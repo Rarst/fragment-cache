@@ -43,6 +43,9 @@ abstract class Fragment_Cache {
 	 */
 	public function fetch( $name, $args, $salt = '' ) {
 
+		if ( self::$in_callback )
+			return $this->callback( $name, $args );
+
 		if ( is_object( $salt ) )
 			$salt = (array) $salt;
 
