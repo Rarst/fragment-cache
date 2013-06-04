@@ -46,14 +46,7 @@ abstract class Fragment_Cache {
 		if ( self::$in_callback )
 			return $this->callback( $name, $args );
 
-		if ( is_object( $salt ) )
-			$salt = (array) $salt;
-
-		if ( is_array( $salt ) ) {
-			asort( $salt );
-			$salt = serialize( $salt );
-		}
-
+		$salt      = maybe_serialize( $salt );
 		$transient = tlc_transient( 'fragment-cache-' . $this->type . '-' . $name . $salt )
 				->updates_with( array( $this, 'callback' ), array( $name, $args ) )
 				->expires_in( $this->timeout );
