@@ -9,14 +9,26 @@ class Menu_Cache extends Fragment_Cache {
 
 	public function enable() {
 
-		add_filter( 'wp_nav_menu_args', array( $this, 'wp_nav_menu_args' ) );
-		add_filter( 'wp_nav_menu_objects', array( $this, 'wp_nav_menu_objects' ) );
+		if ( is_admin() ) {
+			add_action( 'admin_footer-nav-menus.php', array( $this, 'update_menus_edited' ) );
+			add_action( 'wp_ajax_menu-locations-save', array( $this, 'update_menus_edited' ), 0 );
+		}
+		else {
+			add_filter( 'wp_nav_menu_args', array( $this, 'wp_nav_menu_args' ) );
+			add_filter( 'wp_nav_menu_objects', array( $this, 'wp_nav_menu_objects' ) );
+		}
 	}
 
 	public function disable() {
 
-		remove_filter( 'wp_nav_menu_args', array( $this, 'wp_nav_menu_args' ) );
-		remove_filter( 'wp_nav_menu_objects', array( $this, 'wp_nav_menu_objects' ) );
+		if ( is_admin() ) {
+			remove_action( 'admin_footer-nav-menus.php', array( $this, 'update_menus_edited' ) );
+			remove_action( 'wp_ajax_menu-locations-save', array( $this, 'update_menus_edited' ), 0 );
+		}
+		else {
+			remove_filter( 'wp_nav_menu_args', array( $this, 'wp_nav_menu_args' ) );
+			remove_filter( 'wp_nav_menu_objects', array( $this, 'wp_nav_menu_objects' ) );
+		}
 	}
 
 	/**
@@ -58,6 +70,15 @@ class Menu_Cache extends Fragment_Cache {
 	}
 
 	/**
+	 * Save timestamp when menus were last modified for cache salt.
+	 */
+	public function update_menus_edited(  ) {
+
+		if ( ! empty( $_POST ) )
+			update_option( 'fc-menus-edited', time() );
+	}
+	
+	/**
 	 * Restore arguments and fetch cached fragment for them.
 	 *
 	 * @param array $args
@@ -70,10 +91,11 @@ class Menu_Cache extends Fragment_Cache {
 
 		$args = $args['original_args'];
 		unset( $args['original_args'] );
-		$echo               = $args['echo'];
-		$args['echo']       = false;
-		$args['kessel_run'] = true;
-		$name               = is_object( $args['menu'] ) ? $args['menu']->slug : $args['menu'];
+		$echo                    = $args['echo'];
+		$args['echo']            = false;
+		$args['kessel_run']      = true;
+		$args['fc-menus-edited'] = get_option( 'fc-menus-edited' );
+		$name                    = is_object( $args['menu'] ) ? $args['menu']->slug : $args['menu'];
 
 		if ( empty( $name ) && ! empty( $args['theme_location'] ) )
 			$name = $args['theme_location'];
