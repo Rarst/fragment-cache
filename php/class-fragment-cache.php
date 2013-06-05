@@ -46,13 +46,27 @@ abstract class Fragment_Cache {
 		if ( self::$in_callback )
 			return $this->callback( $name, $args );
 
-		$salt      = maybe_serialize( $salt );
-		$transient = tlc_transient( 'fragment-cache-' . $this->type . '-' . $name . $salt )
-				->updates_with( array( $this, 'callback' ), array( $name, $args ) )
-				->expires_in( $this->timeout );
+		$salt   = maybe_serialize( $salt );
+		$output = tlc_transient( 'fragment-cache-' . $this->type . '-' . $name . $salt )
+				->updates_with( array( $this, 'wrap_callback' ), array( $name, $args ) )
+				->expires_in( $this->timeout )
+				->get();
+
+		return $output;
+	}
+
+	/**
+	 * Wraps callback to correctly set execution flag.
+	 *
+	 * @param string $name
+	 * @param array  $args
+	 *
+	 * @return string
+	 */
+	public function wrap_callback( $name, $args ) {
 
 		self::$in_callback = true;
-		$output            = $transient->get();
+		$output = $this->callback( $name, $args );
 		self::$in_callback = false;
 
 		return $output;
@@ -66,7 +80,7 @@ abstract class Fragment_Cache {
 	 *
 	 * @return string
 	 */
-	abstract public function callback( $name, $args );
+	abstract protected function callback( $name, $args );
 
 	/**
 	 * Get human-readable HTML comment with timestamp to append to cached fragment.

@@ -77,7 +77,7 @@ class Gallery_Cache extends Fragment_Cache {
 	 *
 	 * @return string
 	 */
-	public function callback( $name, $args ) {
+	protected function callback( $name, $args ) {
 
 		global $post;
 

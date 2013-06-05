@@ -47,7 +47,7 @@ class Widget_Cache extends Fragment_Cache {
 	 *
 	 * @return string
 	 */
-	public function callback( $name, $args ) {
+	protected function callback( $name, $args ) {
 
 		ob_start();
 		call_user_func_array( $args['callback'], $args['args'] );

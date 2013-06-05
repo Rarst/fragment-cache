@@ -116,7 +116,7 @@ class Menu_Cache extends Fragment_Cache {
 	 *
 	 * @return string
 	 */
-	public function callback( $name, $args ) {
+	protected function callback( $name, $args ) {
 
 		$output = wp_nav_menu( $args ) . $this->get_comment( $name );
 
