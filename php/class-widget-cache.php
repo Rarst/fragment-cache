@@ -9,12 +9,33 @@ class Widget_Cache extends Fragment_Cache {
 
 	public function enable() {
 
-		add_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10, 3 );
+		if ( is_admin() ) {
+			add_action( 'admin_footer-widgets.php', array( $this, 'update_widgets_edited' ) );
+			add_action( 'wp_ajax_save-widget', array( $this, 'update_widgets_edited' ), 0 );
+		}
+		else {
+			add_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10, 3 );
+		}
 	}
 
 	public function disable() {
 
-		remove_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10, 3 );
+		if ( is_admin() ) {
+			remove_action( 'admin_footer-widgets.php', array( $this, 'update_widgets_edited' ) );
+			remove_action( 'wp_ajax_save-widget', array( $this, 'update_widgets_edited' ), 0 );
+		}
+		else {
+			remove_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10, 3 );
+		}
+	}
+
+	/**
+	 * Save timestamp when widgets were last modified for cache salt.
+	 */
+	public function update_widgets_edited(  ) {
+
+		if ( ! empty( $_POST ) )
+			update_option( 'fc-widgets-edited', time() );
 	}
 
 	/**
@@ -33,7 +54,8 @@ class Widget_Cache extends Fragment_Cache {
 			array(
 				'callback' => array( $widget, 'widget' ),
 				'args'     => array( $args, $instance )
-			)
+			),
+			get_option( 'fc-widgets-edited' )
 		);
 
 		return false;
