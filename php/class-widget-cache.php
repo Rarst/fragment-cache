@@ -10,7 +10,7 @@ class Widget_Cache extends Fragment_Cache {
 	public function enable() {
 
 		if ( is_admin() ) {
-			add_action( 'widget_update_callback', array( $this, 'widget_update_callback' ) );
+			add_filter( 'widget_update_callback', array( $this, 'widget_update_callback' ) );
 		}
 		else {
 			add_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10, 3 );
@@ -20,7 +20,7 @@ class Widget_Cache extends Fragment_Cache {
 	public function disable() {
 
 		if ( is_admin() ) {
-			remove_action( 'widget_update_callback', array( $this, 'widget_update_callback' ) );
+			remove_filter( 'widget_update_callback', array( $this, 'widget_update_callback' ) );
 		}
 		else {
 			remove_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10, 3 );
