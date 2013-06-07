@@ -75,7 +75,7 @@ class Menu_Cache extends Fragment_Cache {
 	public function update_menus_edited(  ) {
 
 		if ( ! empty( $_POST ) )
-			update_option( 'fc-menus-edited', time() );
+			update_option( 'fc_menus_edited', time() );
 	}
 	
 	/**
@@ -94,7 +94,7 @@ class Menu_Cache extends Fragment_Cache {
 		$echo                    = $args['echo'];
 		$args['echo']            = false;
 		$args['kessel_run']      = true;
-		$args['fc-menus-edited'] = get_option( 'fc-menus-edited' );
+		$args['fc_menus_edited'] = get_option( 'fc_menus_edited' );
 		$name                    = is_object( $args['menu'] ) ? $args['menu']->slug : $args['menu'];
 
 		if ( empty( $name ) && ! empty( $args['theme_location'] ) )
