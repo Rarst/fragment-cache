@@ -10,8 +10,7 @@ class Widget_Cache extends Fragment_Cache {
 	public function enable() {
 
 		if ( is_admin() ) {
-			add_action( 'admin_footer-widgets.php', array( $this, 'update_widgets_edited' ) );
-			add_action( 'wp_ajax_save-widget', array( $this, 'update_widgets_edited' ), 0 );
+			add_action( 'widget_update_callback', array( $this, 'widget_update_callback' ) );
 		}
 		else {
 			add_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10, 3 );
@@ -21,8 +20,7 @@ class Widget_Cache extends Fragment_Cache {
 	public function disable() {
 
 		if ( is_admin() ) {
-			remove_action( 'admin_footer-widgets.php', array( $this, 'update_widgets_edited' ) );
-			remove_action( 'wp_ajax_save-widget', array( $this, 'update_widgets_edited' ), 0 );
+			remove_action( 'widget_update_callback', array( $this, 'widget_update_callback' ) );
 		}
 		else {
 			remove_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10, 3 );
@@ -30,12 +28,18 @@ class Widget_Cache extends Fragment_Cache {
 	}
 
 	/**
-	 * Save timestamp when widgets were last modified for cache salt.
+	 * Adds timestamp to widget instance to use as salt.
+	 *
+	 * @param array $instance
+	 *
+	 * @return array
 	 */
-	public function update_widgets_edited(  ) {
+	public function widget_update_callback( $instance ) {
 
-		if ( ! empty( $_POST ) )
-			update_option( 'fc-widgets-edited', time() );
+		if ( is_array( $instance ) )
+			$instance['fc_widget_edited'] = time();
+
+		return $instance;
 	}
 
 	/**
@@ -49,13 +53,15 @@ class Widget_Cache extends Fragment_Cache {
 	 */
 	public function widget_display_callback( $instance, $widget, $args ) {
 
+		$edited = isset( $instance['fc_widget_edited'] ) ? $instance['fc_widget_edited'] : '';
+
 		echo $this->fetch(
 			$widget->id,
 			array(
 				'callback' => array( $widget, 'widget' ),
 				'args'     => array( $args, $instance )
 			),
-			get_option( 'fc-widgets-edited' )
+			$edited
 		);
 
 		return false;
