@@ -43,14 +43,30 @@ abstract class Fragment_Cache {
 	 */
 	public function fetch( $name, $args, $salt = '' ) {
 
+		global $current_user;
+
+		static $empty_user;
+
 		if ( self::$in_callback )
 			return $this->callback( $name, $args );
+
+		// anonymize front-end run for consistency
+		if ( is_user_logged_in() ) {
+			if ( empty( $empty_user ) )
+				$empty_user = new \WP_User( 0 );
+
+			$stored_user  = $current_user;
+			$current_user = $empty_user;
+		}
 
 		$salt   = maybe_serialize( $salt );
 		$output = tlc_transient( 'fragment-cache-' . $this->type . '-' . $name . $salt )
 				->updates_with( array( $this, 'wrap_callback' ), array( $name, $args ) )
 				->expires_in( $this->timeout )
 				->get();
+
+		if ( ! empty( $stored_user ) )
+			$current_user = $stored_user;
 
 		return $output;
 	}
