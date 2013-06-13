@@ -47,7 +47,7 @@ abstract class Fragment_Cache {
 
 		static $empty_user;
 
-		if ( self::$in_callback )
+		if ( self::$in_callback || apply_filters( 'fc_skip_cache', false, $this->type, $name, $args, $salt ) )
 			return $this->callback( $name, $args );
 
 		// anonymize front-end run for consistency
