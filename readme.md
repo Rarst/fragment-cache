@@ -12,9 +12,9 @@ Fragment Cache is a Composer package and can be installed in plugin directory vi
 
 # Frequently Asked Questions
 
-## Why fragments don't recognize logged in users / current page / etc?
+## Why fragments don't recognize logged in users / current page?
 
-Fragment Cache implements soft expiration - when fragments expire, they are regenerated asynchronously and do not take time in front end page load. The side effect of this is that it is impossible to preserve context precisely and in generic way.
+Fragment Cache implements soft expiration - when fragments expire, they are regenerated asynchronously and do not take time in front end page load. The side effect is that it is impossible to preserve context precisely and in generic way.
 
 Fragments that must be aware of users or other context information should be excluded from caching or handled by custom implementation, that properly handles that specific context.
 
@@ -24,11 +24,11 @@ Caching for the fragment type can be disabled by manipulating main plugin object
 
     global $fragment_cache;
 
-    unset( $fragment_cache['widget'] ); // completely remove handler, only use before init
+    // completely remove handler, only use before init
+    unset( $fragment_cache['widget'] );
 
-	// or
-
-    $fragment_cache['widget']->disable(); // disable, use after init
+	// or disable handler, use after init
+    $fragment_cache['widget']->disable();
 
 Caching for individual fragments can be disabled by using `fc_skip_cache` hook, for example:
 
@@ -45,7 +45,7 @@ Caching for individual fragments can be disabled by using `fc_skip_cache` hook, 
 ## 1.1
 
  - anonymized fragment generation in front end for consistency
- - added `fc_skip_cache` filter so caching can be disabled for individual fragments
+ - added `fc_skip_cache` filter to disable cache for individual fragments
  - updated documentation 
 
 ## 1.0
