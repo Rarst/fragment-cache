@@ -32,7 +32,7 @@ Caching for the fragment type can be disabled by manipulating main plugin object
 
 Caching for individual fragments can be disabled by using `fc_skip_cache` hook, for example:
 
-    add_action( 'fc_skip_cache', function ( $skip, $type, $name, $args, $salt ) {
+    add_filter( 'fc_skip_cache', function ( $skip, $type, $name, $args, $salt ) {
     
     	if ( 'widget' == $type && is_a( $args['callback'][0], 'WP_Widget_Meta' ) )
     		return true;
