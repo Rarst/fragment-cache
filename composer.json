@@ -19,7 +19,7 @@
 		"composer/installers"          : "~1.0",
 		"markjaquith/wp-tlc-transients": "~1.0",
 		"php"                          : ">=5.3",
-		"pimple/pimple"                : "~1.0"
+		"pimple/pimple"                : "~2.0"
 	},
 	"autoload"    : {
 		"classmap": ["php/"]

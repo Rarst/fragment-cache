@@ -49,11 +49,9 @@ class Plugin extends \Pimple {
 			unset( $this[$type] );
 		}
 
-		$this[$type] = $this->share(
-			function ( $plugin ) use ( $type, $class_name ) {
-				return new $class_name( array( 'type' => $type, 'timeout' => $plugin['timeout'] ) );
-			}
-		);
+		$this[$type] = function ( $plugin ) use ( $type, $class_name ) {
+			return new $class_name( array( 'type' => $type, 'timeout' => $plugin['timeout'] ) );
+		};
 
 		if ( ! in_array( $type, $this->handlers ) )
 			$this->handlers[] = $type;
