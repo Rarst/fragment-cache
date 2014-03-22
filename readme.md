@@ -8,7 +8,7 @@ Caching is built on top of transients API (with enhancements provided by TLC Tra
 
 Fragment Cache is a Composer package and can be installed in plugin directory via:
 
-    php composer.phar create-project rarst/fragment-cache --repository-url=http://rarst.net
+    composer create-project rarst/fragment-cache --no-dev
 
 # Frequently Asked Questions
 
