@@ -22,23 +22,27 @@ Fragments that must be aware of users or other context information should be exc
 
 Caching for the fragment type can be disabled by manipulating main plugin object:
 
-    global $fragment_cache;
+```php
+global $fragment_cache;
 
-    // completely remove handler, only use before init
-    unset( $fragment_cache['widget'] );
+// completely remove handler, only use before init
+unset( $fragment_cache['widget'] );
 
-	// or disable handler, use after init
-    $fragment_cache['widget']->disable();
+// or disable handler, use after init
+$fragment_cache['widget']->disable();
+```
 
 Caching for individual fragments can be disabled by using `fc_skip_cache` hook, for example:
 
-    add_filter( 'fc_skip_cache', function ( $skip, $type, $name, $args, $salt ) {
-    
-    	if ( 'widget' == $type && is_a( $args['callback'][0], 'WP_Widget_Meta' ) )
-    		return true;
-    
-    	return $skip;
-    }, 10, 5 );
+```php
+add_filter( 'fc_skip_cache', function ( $skip, $type, $name, $args, $salt ) {
+
+	if ( 'widget' == $type && is_a( $args['callback'][0], 'WP_Widget_Meta' ) )
+		return true;
+
+	return $skip;
+}, 10, 5 );
+```
 
 # Changelog
 
