@@ -14,7 +14,7 @@ class Menu_Cache extends Fragment_Cache {
 			add_action( 'wp_ajax_menu-locations-save', array( $this, 'update_menus_edited' ), 0 );
 		}
 		else {
-			add_filter( 'wp_nav_menu_args', array( $this, 'wp_nav_menu_args' ) );
+			add_filter( 'wp_nav_menu_args', array( $this, 'wp_nav_menu_args' ), 20 );
 			add_filter( 'wp_nav_menu_objects', array( $this, 'wp_nav_menu_objects' ) );
 		}
 	}
@@ -26,7 +26,7 @@ class Menu_Cache extends Fragment_Cache {
 			remove_action( 'wp_ajax_menu-locations-save', array( $this, 'update_menus_edited' ), 0 );
 		}
 		else {
-			remove_filter( 'wp_nav_menu_args', array( $this, 'wp_nav_menu_args' ) );
+			remove_filter( 'wp_nav_menu_args', array( $this, 'wp_nav_menu_args' ), 20 );
 			remove_filter( 'wp_nav_menu_objects', array( $this, 'wp_nav_menu_objects' ) );
 		}
 	}
