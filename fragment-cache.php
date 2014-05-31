@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Fragment Cache
-Plugin URI: https://bitbucket.org/Rarst/fragment-cache
+Plugin URI: https://github.com/Rarst/fragment-cache
 Description: Cache generated HTML for resource intensive and time consuming components.
 Author: Andrey "Rarst" Savchenko
 Version: 
