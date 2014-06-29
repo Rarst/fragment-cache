@@ -46,6 +46,10 @@ add_filter( 'fc_skip_cache', function ( $skip, $type, $name, $args, $salt ) {
 
 # Changelog
 
+## 1.2
+
+ - added [Update Blocker](https://github.com/Rarst/update-blocker) support
+
 ## 1.1
 
  - anonymized fragment generation in front end for consistency

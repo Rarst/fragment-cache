@@ -21,6 +21,9 @@
 		"php"                          : ">=5.3",
 		"pimple/pimple"                : "~2.0"
 	},
+	"suggest": {
+		"rarst/update-blocker": "Prevents invalid updates from official repositories"
+	},
 	"autoload"    : {
 		"classmap": ["php/"]
 	}

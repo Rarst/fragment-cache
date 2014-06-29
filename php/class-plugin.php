@@ -15,6 +15,7 @@ class Plugin extends \Pimple {
 	public function run() {
 
 		add_action( 'init', array( $this, 'init' ) );
+		add_filter( 'update_blocker_blocked', array( $this, 'update_blocker_blocked' ) );
 	}
 
 	/**
@@ -32,6 +33,20 @@ class Plugin extends \Pimple {
 				unset( $this->handlers[$key] );
 			}
 		}
+	}
+
+	/**
+	 * @see https://github.com/Rarst/update-blocker
+	 *
+	 * @param array $blocked
+	 *
+	 * @return array
+	 */
+	public function update_blocker_blocked( $blocked ) {
+
+		$blocked['plugins'][] = plugin_basename( dirname( __DIR__ ) . '/fragment-cache.php' );
+
+		return $blocked;
 	}
 
 	/**
