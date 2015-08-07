@@ -1,4 +1,4 @@
-# Description
+# Fragment Cache
 
 Fragment Cache is a WordPress plugin for partial and async caching of heavy front-end elements. It currently supports caching navigation menus, widgets, and galleries.
 
@@ -6,7 +6,9 @@ Caching is built on top of transients API (with enhancements provided by TLC Tra
 
 # Installation
 
-Fragment Cache is a Composer package and can be installed in plugin directory via:
+Download plugin archive from [releases section](https://github.com/Rarst/fragment-cache/releases).
+
+Or install in plugin directory via [Composer](https://getcomposer.org/):
 
     composer create-project rarst/fragment-cache --no-dev
 
