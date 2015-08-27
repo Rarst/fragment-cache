@@ -78,7 +78,8 @@ class RoboFile extends \Robo\Tasks {
 
 		/** @var \Symfony\Component\Finder\SplFileInfo $file */
 		foreach ( $finder as $file ) {
-			$zipArchive->addFile( $file->getRealPath(), "{$name}/" . $file->getRelativePathname() );
+			$relativePathname = str_replace( '\\', '/', $file->getRelativePathname() );
+			$zipArchive->addFile( $file->getRealPath(), "{$name}/" . $relativePathname );
 		}
 
 		if ( ! $zipArchive->status === ZIPARCHIVE::ER_OK ) {
