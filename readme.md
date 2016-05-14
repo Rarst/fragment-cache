@@ -46,22 +46,6 @@ add_filter( 'fc_skip_cache', function ( $skip, $type, $name, $args, $salt ) {
 }, 10, 5 );
 ```
 
-# Changelog
-
-## 1.2
-
- - added [Update Blocker](https://github.com/Rarst/update-blocker) support
-
-## 1.1
-
- - anonymized fragment generation in front end for consistency
- - added `fc_skip_cache` filter to disable cache for individual fragments
- - updated documentation 
-
-## 1.0
-
- - initial release
-
 # License Info
 
 Fragment Cache own code is licensed under GPLv2+ and it makes use of code from:
