@@ -5,7 +5,7 @@ Plugin Name: Fragment Cache
 Plugin URI: https://github.com/Rarst/fragment-cache
 Description: Cache generated HTML for resource intensive and time consuming components.
 Author: Andrey "Rarst" Savchenko
-Version: 1.2
+Version: 1.3
 Author URI: http://www.rarst.net/
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
