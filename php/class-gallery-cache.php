@@ -7,37 +7,47 @@ namespace Rarst\Fragment_Cache;
  */
 class Gallery_Cache extends Fragment_Cache {
 
+	/** @var mixed $original_shortcode Callback originally registered for gallery shortcode. */
 	protected $original_shortcode;
 
+	/**
+	 * @inheritDoc
+	 */
 	public function enable() {
 
 		global $shortcode_tags;
 
-		if ( isset( $shortcode_tags['gallery'] ) )
+		if ( isset( $shortcode_tags['gallery'] ) ) {
 			$this->original_shortcode = $shortcode_tags['gallery'];
+		}
 
 		add_shortcode( 'gallery', array( $this, 'gallery_shortcode' ) );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	public function disable() {
 
-		if ( ! empty( $this->original_shortcode ) )
+		if ( ! empty( $this->original_shortcode ) ) {
 			add_shortcode( 'gallery', $this->original_shortcode );
+		}
 	}
 
 	/**
 	 * Fetch and return cached gallery.
 	 *
-	 * @param array $args
+	 * @param array $args Gallery arguments.
 	 *
 	 * @return string
 	 */
 	public function gallery_shortcode( $args ) {
 
-		if ( empty( $args ) )
+		if ( empty( $args ) ) {
 			$args = array();
+		}
 
-		// salt for cases post edited or attachments changed
+		// Salt for cases post edited or attachments changed.
 		$args['fc_post_modified']    = get_the_modified_time( 'U' );
 		$args['fc_post_attachments'] = $this->get_attachment_ids();
 
@@ -58,22 +68,24 @@ class Gallery_Cache extends Fragment_Cache {
 
 		$post_id = get_the_ID();
 
-		if ( ! isset( $attachments[$post_id] ) )
-			$attachments[$post_id] = get_posts( array(
+		if ( ! isset( $attachments[ $post_id ] ) ) {
+
+			$attachments[ $post_id ] = get_posts( array(
 				'post_type'   => 'attachment',
 				'post_parent' => $post_id,
 				'orderby'     => 'ID',
 				'fields'      => 'ids',
 			) );
+		}
 
-		return $attachments[$post_id];
+		return $attachments[ $post_id ];
 	}
 
 	/**
 	 * Set up post context and generate gallery output.
 	 *
-	 * @param string $name
-	 * @param array  $args
+	 * @param string $name Fragment name.
+	 * @param array  $args Arguments.
 	 *
 	 * @return string
 	 */

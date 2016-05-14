@@ -7,14 +7,19 @@ namespace Rarst\Fragment_Cache;
  */
 abstract class Fragment_Cache {
 
+	/** @var bool $in_callback Static flag to catch and prevent nested caching calls.  */
 	static $in_callback = false;
+
+	/** @var int $timeout Cache timeout duration.  */
 	public $timeout;
+
+	/** @var string $type Handler type name. */
 	protected $type;
 
 	/**
 	 * Create object and set parameters from passed.
 	 *
-	 * @param array $args
+	 * @param array $args Configuration arguments.
 	 */
 	public function __construct( $args ) {
 
@@ -35,9 +40,9 @@ abstract class Fragment_Cache {
 	/**
 	 * Wrapper to retrieve data through TLC Transient.
 	 *
-	 * @param string $name
-	 * @param array  $args
-	 * @param mixed  $salt
+	 * @param string $name Name of fragment.
+	 * @param array  $args Arguments.
+	 * @param mixed  $salt Optional salt data.
 	 *
 	 * @return mixed
 	 */
@@ -47,13 +52,16 @@ abstract class Fragment_Cache {
 
 		static $empty_user;
 
-		if ( self::$in_callback || apply_filters( 'fc_skip_cache', false, $this->type, $name, $args, $salt ) )
+		if ( self::$in_callback || apply_filters( 'fc_skip_cache', false, $this->type, $name, $args, $salt ) ) {
 			return $this->callback( $name, $args );
+		}
 
-		// anonymize front-end run for consistency
+		// Anonymize front-end run for consistency.
 		if ( is_user_logged_in() ) {
-			if ( empty( $empty_user ) )
+
+			if ( empty( $empty_user ) ) {
 				$empty_user = new \WP_User( 0 );
+			}
 
 			$stored_user  = $current_user;
 			$current_user = $empty_user;
@@ -65,8 +73,9 @@ abstract class Fragment_Cache {
 				->expires_in( $this->timeout )
 				->get();
 
-		if ( ! empty( $stored_user ) )
+		if ( ! empty( $stored_user ) ) {
 			$current_user = $stored_user;
+		}
 
 		return $output;
 	}
@@ -74,8 +83,8 @@ abstract class Fragment_Cache {
 	/**
 	 * Wraps callback to correctly set execution flag.
 	 *
-	 * @param string $name
-	 * @param array  $args
+	 * @param string $name Fragment name.
+	 * @param array  $args Arguments.
 	 *
 	 * @return string
 	 */
@@ -91,8 +100,8 @@ abstract class Fragment_Cache {
 	/**
 	 * Used to generate data to be cached.
 	 *
-	 * @param string $name
-	 * @param array  $args
+	 * @param string $name Fragment name.
+	 * @param array  $args Arguments.
 	 *
 	 * @return string
 	 */
@@ -101,7 +110,7 @@ abstract class Fragment_Cache {
 	/**
 	 * Get human-readable HTML comment with timestamp to append to cached fragment.
 	 *
-	 * @param string $name
+	 * @param string $name Fragment name.
 	 *
 	 * @return string
 	 */

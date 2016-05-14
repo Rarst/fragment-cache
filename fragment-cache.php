@@ -1,4 +1,5 @@
 <?php
+
 /*
 Plugin Name: Fragment Cache
 Plugin URI: https://github.com/Rarst/fragment-cache
@@ -25,17 +26,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace Rarst\Fragment_Cache;
 
-if ( file_exists( __DIR__ . '/vendor/autoload.php' ) )
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require __DIR__ . '/vendor/autoload.php';
+}
 
 global $fragment_cache;
 
-$fragment_cache = new Plugin(
-	array(
-		'timeout'       => HOUR_IN_SECONDS,
-		'update_server' => new \TLC_Transient_Update_Server(),
-	)
-);
+$fragment_cache = new Plugin( array(
+	'timeout'       => HOUR_IN_SECONDS,
+	'update_server' => new \TLC_Transient_Update_Server(),
+) );
 
 $fragment_cache->add_fragment_handler( 'menu', 'Rarst\\Fragment_Cache\\Menu_Cache' );
 $fragment_cache->add_fragment_handler( 'widget', 'Rarst\\Fragment_Cache\\Widget_Cache' );

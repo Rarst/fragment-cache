@@ -7,6 +7,7 @@ namespace Rarst\Fragment_Cache;
  */
 class Plugin extends \Pimple {
 
+	/** @var array $handlers Set of registered fragment handlers. */
 	protected $handlers = array();
 
 	/**
@@ -24,13 +25,12 @@ class Plugin extends \Pimple {
 	public function init() {
 
 		foreach ( $this->handlers as $key => $type ) {
-			if ( isset( $this[$type] ) ) {
+			if ( isset( $this[ $type ] ) ) {
 				/** @var Fragment_Cache $handler */
-				$handler = $this[$type];
+				$handler = $this[ $type ];
 				$handler->enable();
-			}
-			else {
-				unset( $this->handlers[$key] );
+			} else {
+				unset( $this->handlers[ $key ] );
 			}
 		}
 	}
@@ -38,7 +38,7 @@ class Plugin extends \Pimple {
 	/**
 	 * @see https://github.com/Rarst/update-blocker
 	 *
-	 * @param array $blocked
+	 * @param array $blocked Configuration data for blocked items.
 	 *
 	 * @return array
 	 */
@@ -52,23 +52,24 @@ class Plugin extends \Pimple {
 	/**
 	 * Add (or override) cache handler and enable it.
 	 *
-	 * @param string $type
-	 * @param string $class_name
+	 * @param string $type       Handler type name.
+	 * @param string $class_name Handler class name to instance.
 	 */
 	public function add_fragment_handler( $type, $class_name ) {
 
-		if ( isset( $this[$type] ) ) {
+		if ( isset( $this[ $type ] ) ) {
 			/** @var Fragment_Cache $handler */
-			$handler = $this[$type];
+			$handler = $this[ $type ];
 			$handler->disable();
-			unset( $this[$type] );
+			unset( $this[ $type ] );
 		}
 
-		$this[$type] = function ( $plugin ) use ( $type, $class_name ) {
+		$this[ $type ] = function ( $plugin ) use ( $type, $class_name ) {
 			return new $class_name( array( 'type' => $type, 'timeout' => $plugin['timeout'] ) );
 		};
 
-		if ( ! in_array( $type, $this->handlers ) )
+		if ( ! in_array( $type, $this->handlers, true ) ) {
 			$this->handlers[] = $type;
+		}
 	}
 }
