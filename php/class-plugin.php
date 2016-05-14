@@ -2,10 +2,12 @@
 
 namespace Rarst\Fragment_Cache;
 
+use Pimple\Container;
+
 /**
  * Main plugin's class.
  */
-class Plugin extends \Pimple {
+class Plugin extends Container {
 
 	/** @var array $handlers Set of registered fragment handlers. */
 	protected $handlers = array();

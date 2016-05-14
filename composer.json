@@ -19,7 +19,7 @@
 		"composer/installers"          : "~1.0",
 		"markjaquith/wp-tlc-transients": "~1.0",
 		"php"                          : ">=5.3",
-		"pimple/pimple"                : "~2.0"
+		"pimple/pimple"                : "~3.0"
 	},
 	"suggest": {
 		"rarst/update-blocker": "Prevents invalid updates from official repositories"
