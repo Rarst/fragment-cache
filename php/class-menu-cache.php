@@ -12,12 +12,20 @@ class Menu_Cache extends Fragment_Cache {
 	 */
 	public function enable() {
 
+		global $wp_version;
+
 		if ( is_admin() ) {
 			add_action( 'admin_footer-nav-menus.php', array( $this, 'update_menus_edited' ) );
 			add_action( 'wp_ajax_menu-locations-save', array( $this, 'update_menus_edited' ), 0 );
-		} else {
+
+			return;
+		}
+
+		add_filter( 'pre_wp_nav_menu', array( $this, 'pre_wp_nav_menu' ), 10, 2 );
+		add_filter( 'wp_nav_menu_objects', array( $this, 'wp_nav_menu_objects' ) );
+
+		if ( version_compare( $wp_version, '3.9', '<' ) ) {
 			add_filter( 'wp_nav_menu_args', array( $this, 'wp_nav_menu_args' ), 20 );
-			add_filter( 'wp_nav_menu_objects', array( $this, 'wp_nav_menu_objects' ) );
 		}
 	}
 
@@ -29,20 +37,49 @@ class Menu_Cache extends Fragment_Cache {
 		if ( is_admin() ) {
 			remove_action( 'admin_footer-nav-menus.php', array( $this, 'update_menus_edited' ) );
 			remove_action( 'wp_ajax_menu-locations-save', array( $this, 'update_menus_edited' ), 0 );
-		} else {
-			remove_filter( 'wp_nav_menu_args', array( $this, 'wp_nav_menu_args' ), 20 );
-			remove_filter( 'wp_nav_menu_objects', array( $this, 'wp_nav_menu_objects' ) );
+
+			return;
 		}
+
+		remove_filter( 'pre_wp_nav_menu', array( $this, 'pre_wp_nav_menu' ), 10 );
+		remove_filter( 'wp_nav_menu_objects', array( $this, 'wp_nav_menu_objects' ) );
+		remove_filter( 'wp_nav_menu_args', array( $this, 'wp_nav_menu_args' ), 20 );
+	}
+
+	/**
+	 * Return cached menu, using pre-generation hook.
+	 *
+	 * @param string $menu Menu HTML to return.
+	 * @param object $args Menu arguments.
+	 *
+	 * @return string
+	 */
+	public function pre_wp_nav_menu( $menu, $args ) {
+
+		$args                    = get_object_vars( $args );
+		$args['echo']            = false;
+		$args['fc_menus_edited'] = get_option( 'fc_menus_edited' );
+		$name                    = is_object( $args['menu'] ) ? $args['menu']->slug : $args['menu'];
+
+		if ( empty( $name ) && ! empty( $args['theme_location'] ) ) {
+			$name = $args['theme_location'];
+		}
+
+		return $this->fetch( $name, $args, $args );
 	}
 
 	/**
 	 * Fake no menu matches to force menu run custom callback.
+	 *
+	 * @deprecated
 	 *
 	 * @param array $args Menu arguments.
 	 *
 	 * @return array
 	 */
 	public function wp_nav_menu_args( $args ) {
+
+		_deprecated_function( __FUNCTION__, '1.3', 'Menu cache with arguments override unnecessary on WP >= 3.9.' );
 
 		if ( empty( $args['kessel_run'] ) ) {
 
@@ -92,11 +129,15 @@ class Menu_Cache extends Fragment_Cache {
 	/**
 	 * Restore arguments and fetch cached fragment for them.
 	 *
+	 * @deprecated
+	 *
 	 * @param array $args Arguments.
 	 *
 	 * @return string
 	 */
 	public function fallback_cb( $args ) {
+
+		_deprecated_function( __FUNCTION__, '1.3', 'Menu cache with arguments override unnecessary on WP >= 3.9.' );
 
 		remove_filter( 'wp_get_nav_menus', '__return_empty_array' );
 
@@ -131,7 +172,9 @@ class Menu_Cache extends Fragment_Cache {
 	 */
 	protected function callback( $name, $args ) {
 
+		remove_filter( 'pre_wp_nav_menu', array( $this, 'pre_wp_nav_menu' ), 10 );
 		$output = wp_nav_menu( $args ) . $this->get_comment( $name );
+		add_filter( 'pre_wp_nav_menu', array( $this, 'pre_wp_nav_menu' ), 10, 2 );
 
 		return $output;
 	}
