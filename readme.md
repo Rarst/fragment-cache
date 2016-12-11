@@ -1,4 +1,5 @@
 # Fragment Cache
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Rarst/fragment-cache/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Rarst/fragment-cache/?branch=master)
 
 Fragment Cache is a WordPress plugin for partial and async caching of heavy front-end elements. It currently supports caching navigation menus, widgets, and galleries.
 
