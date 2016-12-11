@@ -14,6 +14,7 @@ class Widget_Cache extends Fragment_Cache {
 
 		if ( is_admin() ) {
 			add_filter( 'widget_update_callback', array( $this, 'widget_update_callback' ) );
+			add_action( 'wp_ajax_update-widget', array( $this, 'update_widget' ), 0 );
 		} else {
 			add_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10, 3 );
 		}
@@ -26,6 +27,7 @@ class Widget_Cache extends Fragment_Cache {
 
 		if ( is_admin() ) {
 			remove_filter( 'widget_update_callback', array( $this, 'widget_update_callback' ) );
+			remove_action( 'wp_ajax_update-widget', array( $this, 'update_widget' ), 0 );
 		} else {
 			remove_filter( 'widget_display_callback', array( $this, 'widget_display_callback' ), 10 );
 		}
@@ -45,6 +47,42 @@ class Widget_Cache extends Fragment_Cache {
 		}
 
 		return $instance;
+	}
+
+	/**
+	 * Invalidate widget instance cache on Customizer save.
+	 */
+	public function update_widget() {
+
+		$customized = filter_input( INPUT_POST, 'customized' );
+
+		if ( empty( $customized ) ) {
+			return;
+		}
+
+		$customized = json_decode( $customized, true );
+		$changed    = false;
+
+		foreach ( $customized as $key => $data ) {
+
+			if ( ! isset( $data['encoded_serialized_instance'] ) || 0 !== stripos( $key, 'widget' ) ) {
+				continue;
+			}
+
+			$instance                     = unserialize( base64_decode( $data['encoded_serialized_instance'] ) );
+			$instance['fc_widget_edited'] = time();
+			$instance                     = base64_encode( serialize( $instance ) );
+
+			$data['encoded_serialized_instance'] = $instance;
+			$data['instance_hash_key']           = wp_hash( $instance );
+			$customized[ $key ]                  = $data;
+
+			$changed = true;
+		}
+
+		if ( $changed ) {
+			$_POST['customized'] = wp_json_encode( $customized );
+		}
 	}
 
 	/**
