@@ -26,6 +26,14 @@ class Plugin extends Container {
 	 */
 	public function init() {
 
+		if (
+			'on' === filter_input( INPUT_POST, 'wp_customize' )
+			&& empty( filter_input( INPUT_POST, 'action' ) )
+			&& current_user_can( 'customize' )
+		) {
+			return; // We don’t want cache running in Customizer previews.
+		}
+		
 		foreach ( $this->handlers as $key => $type ) {
 			if ( isset( $this[ $type ] ) ) {
 				/** @var Fragment_Cache $handler */
