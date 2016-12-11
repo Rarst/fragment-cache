@@ -17,6 +17,7 @@ class Menu_Cache extends Fragment_Cache {
 		if ( is_admin() ) {
 			add_action( 'admin_footer-nav-menus.php', array( $this, 'update_menus_edited' ) );
 			add_action( 'wp_ajax_menu-locations-save', array( $this, 'update_menus_edited' ), 0 );
+			add_action( 'wp_ajax_customize_save', array( $this, 'customize_save' ), 0 );
 
 			return;
 		}
@@ -37,6 +38,7 @@ class Menu_Cache extends Fragment_Cache {
 		if ( is_admin() ) {
 			remove_action( 'admin_footer-nav-menus.php', array( $this, 'update_menus_edited' ) );
 			remove_action( 'wp_ajax_menu-locations-save', array( $this, 'update_menus_edited' ), 0 );
+			remove_action( 'wp_ajax_customize_save', array( $this, 'customize_save' ), 0 );
 
 			return;
 		}
@@ -123,6 +125,31 @@ class Menu_Cache extends Fragment_Cache {
 
 		if ( ! empty( $_POST ) ) {
 			update_option( 'fc_menus_edited', time() );
+		}
+	}
+
+	/**
+	 * Invalidate menu cache on related Customizer saves.
+	 */
+	public function customize_save() {
+
+		$customized = filter_input( INPUT_POST, 'customized' );
+
+		if ( empty( $customized ) ) {
+			return;
+		}
+
+		$customized = json_decode( $customized, true );
+		$settings   = array_keys( $customized );
+
+		foreach ( $settings as $setting ) {
+
+			if ( 0 === stripos( $setting, 'nav_menu' ) ) {
+
+				update_option( 'fc_menus_edited', time() );
+
+				return;
+			}
 		}
 	}
 
