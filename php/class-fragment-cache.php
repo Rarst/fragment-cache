@@ -68,7 +68,7 @@ abstract class Fragment_Cache {
 		}
 
 		$salt   = maybe_serialize( $salt );
-		$output = tlc_transient( 'fragment-cache-' . $this->type . '-' . $name . $salt )
+		$output = tlc_transient( apply_filters( 'fc_cache_name', 'fragment-cache-' . $this->type . '-' . $name . $salt, $this->type, $name, $args, $salt ) )
 				->updates_with( array( $this, 'wrap_callback' ), array( $name, $args ) )
 				->expires_in( $this->timeout )
 				->get();
