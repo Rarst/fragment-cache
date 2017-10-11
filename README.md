@@ -23,6 +23,8 @@ Fragments that must be aware of users or other context information should be exc
 
 ## How to disable caching?
 
+### Disable handler
+
 Caching for the fragment type can be disabled by manipulating main plugin object:
 
 ```php
@@ -35,13 +37,48 @@ unset( $fragment_cache['widget'] );
 $fragment_cache['widget']->disable();
 ```
 
-Caching for individual fragments can be disabled by using `fc_skip_cache` hook, for example:
+### Skip individual fragments
+
+Caching for individual fragments can be disabled by using `fc_skip_cache` hook.
+
+#### Widget
 
 ```php
 add_filter( 'fc_skip_cache', function ( $skip, $type, $name, $args, $salt ) {
 
-	if ( 'widget' == $type && is_a( $args['callback'][0], 'WP_Widget_Meta' ) )
+	if ( 'widget' === $type && is_a( $args['callback'][0], 'WP_Widget_Meta' ) ) {
 		return true;
+	}
+
+	return $skip;
+}, 10, 5 );
+```
+
+#### Menu
+
+```php
+add_filter( 'fc_skip_cache', function ( $skip, $type, $name, $args, $salt ) {
+
+	if ( 'menu' === $type && isset( $args['name'] ) && 'Menu with login' === $args['name'] ) {
+		return true;
+	}
+
+	if ( 'menu' === $type && isset( $args['theme_location'] ) && 'header' === $args['theme_location'] ) {
+		return true;
+	}
+
+	return $skip;
+}, 10, 5 );
+```
+
+#### Gallery
+
+```php
+add_filter( 'fc_skip_cache', function ( $skip, $type, $name, $args, $salt ) {
+
+	if ( 'gallery' === $type && 123 === $args['post_id'] ) {
+		return true;
+	}
 
 	return $skip;
 }, 10, 5 );
